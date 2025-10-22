@@ -19,7 +19,7 @@ void clear_input() {
     while ((flushchar = getchar()) != '\n' && flushchar != EOF); // copied from week 4 assignment
 }
 
-unsigned int get_id(unsigned int ids[], int fleet_size) {
+unsigned int get_id() {
     unsigned int id;
     printf("Enter an ID: ");
 
@@ -29,28 +29,28 @@ unsigned int get_id(unsigned int ids[], int fleet_size) {
     }
 
     clear_input();
-    ids[fleet_size] = id;
+    return id;
 }
 
-void get_name(char models[][MAX_MODEL_NAME_LENGTH], int fleet_size) { // TODO: More advanced input verification
+void get_name(char name[MAX_MODEL_NAME_LENGTH]) { // TODO: More advanced input verification
     printf("Enter model name: ");
 
     int character; // needs to be an int so that EOF works properly
     int name_index = 0;
     
     while ((character = getchar()) != '\n' && character != EOF && name_index < MAX_MODEL_NAME_LENGTH) { // While getchar is reading and the string is not longer than the name limit..
-        models[fleet_size][name_index] = (char) character; //Typecast or things will not work properly
+        name[name_index] = (char) character; //Typecast or things will not work properly
         name_index++;
     }
 
-    models[fleet_size][name_index] = '\0'; // end of string
+    name[name_index] = '\0'; // end of string
 
     if (name_index >= MAX_MODEL_NAME_LENGTH) { // Uh oh! The user inputted extra characters, so we need to clear the input!
         clear_input();
     }
 }
 
-float get_battery_level(float batteries[], int fleet_Size) {
+float get_battery_level() {
     float level;
     printf("Enter battery level: ");
 
@@ -60,7 +60,7 @@ float get_battery_level(float batteries[], int fleet_Size) {
     }
 
     clear_input();
-    batteries[fleet_Size] = level;
+    return level;
 }
 
 void calculate_average_battery(float batteries[], int fleet_size) {
@@ -93,22 +93,22 @@ float get_coordinate(char coord_char) { // Helper function that just fetches an 
     return coord;
 }
 
-void get_position(float positions[][2], int fleet_size) {
-    positions[fleet_size][0] = get_coordinate('X');
-    positions[fleet_size][1] = get_coordinate('Y');
+void get_position(float position[2]) {
+    position[0] = get_coordinate('X');
+    position[1] = get_coordinate('Y');
 }
 
 // adds a drone the id value cannot
 int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("Add a drone:\n"); // Feedback to the user is important!
 
-    get_id(ids, fleet_size); // Gets integer
+    ids[fleet_size] = get_id();
 
-    get_name(models, fleet_size); // Pass array we want edited because we cannot 
+    get_name(models[fleet_size]); // Pass array we want edited because we cannot 
 
-    get_battery_level(batteries, fleet_size); // Gets a float from 0.0 to 100.0
+    batteries[fleet_size] = get_battery_level(); // Gets a float from 0.0 to 100.0
 
-    get_position(positions, fleet_size); // Gets two values
+    get_position(positions[fleet_size]); // Gets two values
 
     printf("Drone %s [ID=%u] added!\n", models[fleet_size], ids[fleet_size]); // Feedback to the user is important!
 
@@ -141,7 +141,10 @@ void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_
     }
 }
 
-bool search_drone_by_id(unsigned int id, unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+bool search_drone_by_id(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+    printf("Search for drone by id:\n");
+    unsigned int id = get_id();
+
     for (int index = 0; index < fleet_size; index++) {
         printf("%u\n", ids[index]);
         if (ids[index] == id) {
@@ -187,7 +190,7 @@ int main(void) {
     int choice;
 
     do{
-        printf("Options: \n\t[1] add a drone \n\t[2] display drones \n\t[3] ID search \n\t[4] average battery \n\t[5] add fleet \n\t[6] find nearest drone \n\t[0] exit\n\n Enter command: ");
+        printf("Options: \n\t[1] add a drone \n\t[2] display drones \n\t[3] ID search \n\t[4] average battery \n\t[5] add fleet \n\t[6] find nearest drone \n\t[0] exit\n\nEnter command: ");
 
         while (scanf("%d", &choice) != 1 && choice >= 0 && choice <= 7){
             printf("Invalid input. Please enter an integer between 1 and 7: ");
@@ -204,11 +207,11 @@ int main(void) {
                 break;
             }
             case 3: {
-                printf("Very absent at this moment(10/22/2025)");
+                search_drone_by_id(ids, fleet_size, models, batteries, positions);
                 break;
             } 
             case 4: {
-                printf("Average battery function doot doot doot doot");
+                calculate_average_battery(batteries, fleet_size);
                 break;
             }
             case 5: {
