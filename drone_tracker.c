@@ -100,21 +100,12 @@ int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
     return fleet_size + 1; // Increment fleet size by 1
 }
 
-
-<<<<<<< Updated upstream
-
 // Function that satisfies Variation 2B - Nearest Drone finder
-=======
-void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
-    printf("%-4u | %-5s | %-7.2f | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
-}
-
 void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("%-4u | %-5s | %-7.2f | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
 }
 
 // Variation 2B - Nearest Drone finder
->>>>>>> Stashed changes
 void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("Drones:\n");
     printf("%-4s | %-5s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
