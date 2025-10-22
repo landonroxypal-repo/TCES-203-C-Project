@@ -23,7 +23,7 @@ unsigned int get_id(unsigned int ids[], int fleet_size) {
     printf("Enter an ID: ");
 
     while (scanf("%u", &id) != 1 || id == 0){
-        printf("Invalid input. Please enter a nonzero positive integer.\n");
+        printf("Invalid input. Please enter a nonzero positive integer: ");
         clear_input(); // without this clear, an infnite loop is possible!
     }
 
@@ -31,7 +31,7 @@ unsigned int get_id(unsigned int ids[], int fleet_size) {
     ids[fleet_size] = id;
 }
 
-void get_name(char models[][MAX_MODEL_NAME_LENGTH], int fleet_size) {
+void get_name(char models[][MAX_MODEL_NAME_LENGTH], int fleet_size) { // TODO: More advanced input verification
     printf("Enter model name: ");
 
     int character; // needs to be an int so that EOF works properly
@@ -68,7 +68,7 @@ float get_coordinate(char coord_char) { // Helper function that just fetches an 
     printf("Enter %c coordinate: ", coord_char);
     
     while (scanf("%f", &coord) != 1){
-        printf("Invalid input. Please enter a number.\n");
+        printf("Invalid input. Please enter a number: ");
         clear_input(); // without this clear, an infnite loop is possible!
     }
 
@@ -83,7 +83,7 @@ void get_position(float positions[][2], int fleet_size) {
 
 // adds a drone the id value cannot
 int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
-    printf("Add a drone:\n"); // Feedback to the user is important!
+    printf("Add a drone:]\n"); // Feedback to the user is important!
 
     get_id(ids, fleet_size); // Gets integer
 
@@ -101,15 +101,23 @@ int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
 }
 
 
+<<<<<<< Updated upstream
 
 // Function that satisfies Variation 2B - Nearest Drone finder
+=======
+void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+    printf("%-4u | %-5s | %-7.2f | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
+}
+
+// Variation 2B - Nearest Drone finder
+>>>>>>> Stashed changes
 void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("Drones:\n");
     printf("%-4s | %-5s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
     printf("-------------------------------------------\n"); // Cosmetic
 
     for (int index = 0; index < fleet_size; index++) {
-        printf("%-4u | %-5s | %-7.2f | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
+        display_drone(index, ids, models, batteries, positions);
     }
 }
 
