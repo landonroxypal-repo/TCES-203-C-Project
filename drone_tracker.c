@@ -183,7 +183,7 @@ int main(void) {
     char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH];
     float batteries[MAX_FLEET_SIZE];
     float positions[MAX_FLEET_SIZE][2];
-<<<<<<< Updated upstream
+    
     int choice;
 
     do{
@@ -194,7 +194,7 @@ int main(void) {
             clear_input();
         }
 
-        switch (choice){
+        switch (choice) {
             case 1: {
                 fleet_size = add_drone(ids, fleet_size, models, batteries, positions);
                 break;
@@ -227,14 +227,9 @@ int main(void) {
                 printf("invalid command");
                 break;
             }
-            
-
         }
         
-    }while (choice != 0);
-
-=======
->>>>>>> Stashed changes
+    } while (choice != 0);
     
     return 0;
 }
