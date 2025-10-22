@@ -144,10 +144,55 @@ int main(void) {
     char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH];
     float batteries[MAX_FLEET_SIZE];
     float positions[MAX_FLEET_SIZE][2];
+    int choice;
 
-    for(;;) {
-        fleet_size = add_fleet(ids, fleet_size, models, batteries, positions);
-    }
+    do{
+        printf("Options: \n\t[1] add a drone \n\t[2] display drones \n\t[3] ID search \n\t[4] average battery \n\t[5] add fleet \n\t[6] find nearest drone \n\t[0] exit\n\n Enter command: ");
+
+        while (scanf("%d", &choice) != 1 && choice >= 0 && choice <= 7){
+            printf("Invalid input. Please enter an integer between 1 and 7: ");
+            clear_input();
+        }
+
+        switch (choice){
+            case 1: {
+                fleet_size = add_drone(ids, fleet_size, models, batteries, positions);
+                break;
+            }
+            case 2: {
+                display_drones(ids, fleet_size, models, batteries, positions);
+                break;
+            }
+            case 3: {
+                printf("Very absent at this moment(10/22/2025)");
+                break;
+            } 
+            case 4: {
+                printf("Average battery function doot doot doot doot");
+                break;
+            }
+            case 5: {
+                fleet_size = add_fleet(ids, fleet_size, models, batteries, positions);
+                break;
+            }
+            case 6: {
+                printf("Done later");
+                break;
+            }
+            case 0: {
+                printf("goodbye!");
+                break;
+            }
+            default: {
+                printf("invalid command");
+                break;
+            }
+            
+
+        }
+        
+    }while (choice != 0);
+
     
     return 0;
 }
