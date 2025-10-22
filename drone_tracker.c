@@ -9,6 +9,7 @@
 // Variation 2:     2B - Nearest Drone Finder
 
 #include <stdio.h>  
+#include <stdbool.h>
 
 #define MAX_FLEET_SIZE 100
 #define MAX_MODEL_NAME_LENGTH 5
@@ -62,6 +63,22 @@ float get_battery_level(float batteries[], int fleet_Size) {
     batteries[fleet_Size] = level;
 }
 
+void calculate_average_battery(float batteries[], int fleet_size) {
+    if (fleet_size > 0) {
+        float average = 0.0f;
+
+        for (int index = 0; index < fleet_size; index++) {
+            average += batteries[index]; // add values
+        }
+
+        average /= fleet_size; // calculate average
+
+        printf("Average battery of all drones: %.2f\n", average);
+    } else {
+        printf("No drones available.\n");
+    }
+}
+
 float get_coordinate(char coord_char) { // Helper function that just fetches an int with a coordinate label attached to it
     float coord;
 
@@ -83,7 +100,7 @@ void get_position(float positions[][2], int fleet_size) {
 
 // adds a drone the id value cannot
 int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
-    printf("Add a drone:]\n"); // Feedback to the user is important!
+    printf("Add a drone:\n"); // Feedback to the user is important!
 
     get_id(ids, fleet_size); // Gets integer
 
@@ -100,20 +117,43 @@ int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
     return fleet_size + 1; // Increment fleet size by 1
 }
 
+void display_table_header() {
+    printf("%-4s | %-5s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
+    printf("-------------------------------------------\n"); // Cosmetic
+}
+
 // Function that satisfies Variation 2B - Nearest Drone finder
-void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2], bool single) {
+    if (single) {
+        display_table_header();
+    }
+
     printf("%-4u | %-5s | %-7.2f | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
 }
 
 // Variation 2B - Nearest Drone finder
 void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("Drones:\n");
-    printf("%-4s | %-5s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
-    printf("-------------------------------------------\n"); // Cosmetic
+    display_table_header();
 
     for (int index = 0; index < fleet_size; index++) {
-        display_drone(index, ids, models, batteries, positions);
+        display_drone(index, ids, models, batteries, positions, false);
     }
+}
+
+bool search_drone_by_id(unsigned int id, unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+    for (int index = 0; index < fleet_size; index++) {
+        printf("%u\n", ids[index]);
+        if (ids[index] == id) {
+            printf("Drone [ID=%u] found!\n", id);
+            printf("Drone [ID=%u] Data:\n", id);
+            display_drone(index, ids, models, batteries, positions, true);
+            return true; // No point in iterating more when we found the target drone
+        }
+    }
+    
+    printf("No drone of [ID=%u] found!\n", id);
+    return false;
 }
 
 // Function that satisfies Variation 1C - Continuous entry mode
@@ -121,7 +161,7 @@ int add_fleet(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
     char choice;
     printf("Adding Fleet:\n");
     
-    do{
+    do {
         fleet_size = add_drone(ids, fleet_size, models, batteries, positions);
         
 
@@ -135,7 +175,6 @@ int add_fleet(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
     display_drones(ids, fleet_size, models, batteries, positions);
     
     return fleet_size;
-    
 }
 
 int main(void) {
@@ -144,6 +183,7 @@ int main(void) {
     char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH];
     float batteries[MAX_FLEET_SIZE];
     float positions[MAX_FLEET_SIZE][2];
+<<<<<<< Updated upstream
     int choice;
 
     do{
@@ -193,6 +233,8 @@ int main(void) {
         
     }while (choice != 0);
 
+=======
+>>>>>>> Stashed changes
     
     return 0;
 }
