@@ -10,6 +10,7 @@
 
 #include <stdio.h>  
 #include <stdbool.h>
+#include <math.h>
 
 #define MAX_FLEET_SIZE 100
 #define MAX_MODEL_NAME_LENGTH 5
@@ -180,6 +181,39 @@ int add_fleet(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
     return fleet_size;
 }
 
+float calculate_distance(float x0, float y0, float x1, float y1) {
+    return sqrt(pow(x1-x0, 2) + pow(y1 - y0, 2));
+} // possible bug in the distance calculation.
+
+void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[MAX_FLEET_SIZE][2]){
+    
+    
+    printf("Finding nearest drone: \n");
+    float x = get_coordinate('X');
+    float y = get_coordinate('Y');
+
+
+    float current_x = positions[0][0], current_y = positions[0][1];
+    double distance = calculate_distance(x, y, current_x, current_y);
+    int index;
+    double test_distance;
+
+
+
+    // this for loop iterates through the position array and 
+    for (int i = 1; i < MAX_FLEET_SIZE; i++){
+        if (test_distance = calculate_distance(x, y, positions[i][0], positions[i][1]) < distance){
+            index = i;
+            distance = test_distance;
+        }
+    }
+
+    // prints resulting drone
+    printf("Nearest drone (%.2f units away): \n", distance);
+    display_drone(index, ids, models, batteries, positions, true);
+    printf("\n");
+}
+
 int main(void) {
     unsigned int ids[MAX_FLEET_SIZE];
     int fleet_size = 0;
@@ -219,6 +253,7 @@ int main(void) {
                 break;
             }
             case 6: {
+                find_nearest_drone(ids, fleet_size, models, batteries, positions);
                 printf("Done later");
                 break;
             }
