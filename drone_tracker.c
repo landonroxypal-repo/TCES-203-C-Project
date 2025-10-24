@@ -80,7 +80,7 @@ void calculate_average_battery(float batteries[], int fleet_size) {
     }
 }
 
-float get_coordinate(char coord_char) { // Helper function that just fetches an int with a coordinate label attached to it
+float get_coordinate(char coord_char) { // Helper function that just fetches a float with a coordinate label attached to it
     float coord;
 
     printf("Enter %c coordinate: ", coord_char);
@@ -181,8 +181,10 @@ int add_fleet(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
     return fleet_size;
 }
 
-float calculate_distance(float x0, float y0, float x1, float y1) {
-    return sqrt(pow(x1-x0, 2) + pow(y1 - y0, 2));
+double calculate_distance(float x0, float y0, float x1, float y1) {
+    double distance = sqrt((x1-x0) * (x1 - x0) + (y1 - y0) *(y1-y0));
+    printf("Distance :%f\n"); 
+    return distance;
 } // possible bug in the distance calculation.
 
 void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[MAX_FLEET_SIZE][2]){
@@ -206,6 +208,7 @@ void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MO
             index = i;
             distance = test_distance;
         }
+        printf("%d \n\n", distance);
     }
 
     // prints resulting drone
@@ -254,7 +257,6 @@ int main(void) {
             }
             case 6: {
                 find_nearest_drone(ids, fleet_size, models, batteries, positions);
-                printf("Done later");
                 break;
             }
             case 0: {
