@@ -13,19 +13,32 @@
 #include <math.h>
 
 #define MAX_FLEET_SIZE 100
-#define MAX_MODEL_NAME_LENGTH 5
+#define MAX_MODEL_NAME_LENGTH 7 // Note: due to the terminate character this value must be the name length you want + 1. (i.e if you want a six character name limit set this value to 0)
 
 void clear_input() {
     int flushchar; 
     while ((flushchar = getchar()) != '\n' && flushchar != EOF); // copied from week 4 assignment
 }
 
-unsigned int get_id() {
+bool is_id_dupe(unsigned int id, unsigned int ids[]) {
+    for (int index = 0; index < MAX_FLEET_SIZE; index++) {
+        if (ids[index] == id) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+unsigned int get_id(unsigned int ids[], bool restrict_to_unique) {
     unsigned int id;
     printf("Enter an ID: ");
 
-    while (scanf("%u", &id) != 1 || id == 0){
-        printf("Invalid input. Please enter a nonzero positive integer: ");
+    //TODO: Add duplicate ID detection apparently
+
+    bool is_dupe = false;
+    while (scanf("%u", &id) != 1 || id == 0 || restrict_to_unique && (is_dupe = is_id_dupe(id, ids))){
+        printf("Invalid input. %s", is_dupe ? "Entered id is a duplicate, please enter a different id: " : "Please enter a nonzero positive integer:");
         clear_input(); // without this clear, an infnite loop is possible!
     }
 
@@ -33,21 +46,23 @@ unsigned int get_id() {
     return id;
 }
 
-void get_name(char name[MAX_MODEL_NAME_LENGTH]) { // TODO: More advanced input verification
+void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
     printf("Enter model name: ");
 
     int character; // needs to be an int so that EOF works properly
     int name_index = 0;
     
-    while ((character = getchar()) != '\n' && character != EOF && name_index < MAX_MODEL_NAME_LENGTH) { // While getchar is reading and the string is not longer than the name limit..
+    while ((character = getchar()) != '\n' && character != EOF && name_index < MAX_MODEL_NAME_LENGTH - 1) { // While getchar is reading and the string is not longer than the name limit..
         name[name_index] = (char) character; //Typecast or things will not work properly
+        printf("Placed %c\n", name[name_index]);
         name_index++;
     }
 
-    name[name_index] = '\0'; // end of string
+    name[name_index + 1] = '\0'; // end of string
 
-    if (name_index >= MAX_MODEL_NAME_LENGTH) { // Uh oh! The user inputted extra characters, so we need to clear the input!
+    if (name_index == MAX_MODEL_NAME_LENGTH - 1) { // Uh oh! The user inputted extra characters, so we need to clear the input!
         clear_input();
+        printf("Characters cleared!\n");
     }
 }
 
@@ -100,12 +115,12 @@ void get_position(float position[2]) {
 }
 
 // adds a drone the id value cannot
-int add_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+int add_drone(unsigned int ids[], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("Add a drone:\n"); // Feedback to the user is important!
 
-    ids[fleet_size] = get_id();
+    ids[fleet_size] = get_id(ids, true);
 
-    get_name(models[fleet_size]); // Pass array we want edited because we cannot 
+    get_name(models[fleet_size]); // Pass array we want edited
 
     batteries[fleet_size] = get_battery_level(); // Gets a float from 0.0 to 100.0
 
@@ -125,26 +140,34 @@ void display_table_header() {
 
 // Function that satisfies Variation 2B - Nearest Drone finder
 void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2], bool single) {
-    if (single) {
-        display_table_header();
-    }
+    if (ids[index] != 0) {
+        if (single) {
+            display_table_header();
+        } 
 
-    printf("%-4u | %-5s | %-7.2f | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
+        printf("%-4u | %-5s | %-6.2f%% | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
+    } else {
+        printf("No drone to display at index %d!", index);
+    }
 }
 
 // Variation 2B - Nearest Drone finder
 void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
-    printf("Drones:\n");
-    display_table_header();
+    if (fleet_size > 0) {
+        printf("Drones:\n");
+        display_table_header();
 
-    for (int index = 0; index < fleet_size; index++) {
-        display_drone(index, ids, models, batteries, positions, false);
+        for (int index = 0; index < fleet_size; index++) {
+            display_drone(index, ids, models, batteries, positions, false);
+        }        
+    } else {
+        printf("No drones to display!\n");
     }
 }
 
 bool search_drone_by_id(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
     printf("Search for drone by id:\n");
-    unsigned int id = get_id();
+    unsigned int id = get_id(ids, false);
 
     for (int index = 0; index < fleet_size; index++) {
         printf("%u\n", ids[index]);
