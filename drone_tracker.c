@@ -206,9 +206,9 @@ int add_fleet(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_L
 
 double calculate_distance(float x0, float y0, float x1, float y1) {
     double distance = sqrt((x1-x0) * (x1 - x0) + (y1 - y0) *(y1-y0));
-    printf("Distance :%f\n"); 
+    printf("Distance: %f\n"); 
     return distance;
-} // possible bug in the distance calculation.
+}
 
 void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[MAX_FLEET_SIZE][2]){
     
@@ -225,7 +225,7 @@ void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MO
 
 
 
-    // this for loop iterates through the position array and 
+    // this for loop iterates through the position array
     for (int i = 1; i < MAX_FLEET_SIZE; i++){
         if (test_distance = calculate_distance(x, y, positions[i][0], positions[i][1]) < distance){
             index = i;
