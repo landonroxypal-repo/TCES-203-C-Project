@@ -15,12 +15,14 @@
 #define MAX_FLEET_SIZE 100
 #define MAX_MODEL_NAME_LENGTH 7 // Note: due to the terminate character this value must be the name length you want + 1. (i.e if you want a six character name limit set this value to 0)
 
+// This function clears the input stream so that scanf won't read input that is left during previous calls. 
 void clear_input() {
     int flushchar; 
     while ((flushchar = getchar()) != '\n' && flushchar != EOF); // copied from week 4 assignment
 }
 
-bool is_id_dupe(unsigned int id, unsigned int ids[]) {
+// This function is used to check if the id added in the get_id function is unique.
+bool is_id_dupe(int id, int ids[MAX_FLEET_SIZE]) { 
     for (int index = 0; index < MAX_FLEET_SIZE; index++) {
         if (ids[index] == id) {
             return true;
@@ -30,14 +32,13 @@ bool is_id_dupe(unsigned int id, unsigned int ids[]) {
     return false;
 }
 
-unsigned int get_id(unsigned int ids[], bool restrict_to_unique) {
-    unsigned int id;
+// This function prompts for an id and returns the resulting numerical value.
+int get_id(int ids[MAX_FLEET_SIZE], bool restrict_to_unique) {
+    int id;
     printf("Enter an ID: ");
 
-    //TODO: Add duplicate ID detection apparently
-
     bool is_dupe = false;
-    while (scanf("%u", &id) != 1 || id == 0 || restrict_to_unique && (is_dupe = is_id_dupe(id, ids))){
+    while (scanf("%u", &id) != 1 || id == 0 || restrict_to_unique && (is_dupe = is_id_dupe(id, ids))){ // ID checked to see if it's a duplicate here.
         printf("Invalid input. %s", is_dupe ? "Entered id is a duplicate, please enter a different id: " : "Please enter a nonzero positive integer:");
         clear_input(); // without this clear, an infnite loop is possible!
     }
@@ -46,6 +47,7 @@ unsigned int get_id(unsigned int ids[], bool restrict_to_unique) {
     return id;
 }
 
+// This function is used to create a model name for the drones. It is then returned in add_drone. 
 void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
     printf("Enter model name: ");
 
@@ -53,8 +55,7 @@ void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
     int name_index = 0;
     
     while ((character = getchar()) != '\n' && character != EOF && name_index < MAX_MODEL_NAME_LENGTH - 1) { // While getchar is reading and the string is not longer than the name limit..
-        name[name_index] = (char) character; //Typecast or things will not work properly
-        printf("Placed %c\n", name[name_index]);
+        name[name_index] = (char) character; // We need to typecast the character variable (int to char) so that the compiler doesn't throw any errors
         name_index++;
     }
 
@@ -66,6 +67,7 @@ void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
     }
 }
 
+// This function pulls the battery level inputted by the user.
 float get_battery_level() {
     float level;
     printf("Enter battery level: ");
@@ -79,7 +81,8 @@ float get_battery_level() {
     return level;
 }
 
-void calculate_average_battery(float batteries[], int fleet_size) {
+// This function calculates the average battery levels of the entire drone fleet. 
+void calculate_average_battery(float batteries[MAX_FLEET_SIZE], int fleet_size) {
     if (fleet_size > 0) {
         float average = 0.0f;
 
@@ -95,7 +98,8 @@ void calculate_average_battery(float batteries[], int fleet_size) {
     }
 }
 
-float get_coordinate(char coord_char) { // Helper function that just fetches a float with a coordinate label attached to it
+// This function is a helper function that just fetches a float with a coordinate label attached to it
+float get_coordinate(char coord_char) { 
     float coord;
 
     printf("Enter %c coordinate: ", coord_char);
@@ -109,13 +113,15 @@ float get_coordinate(char coord_char) { // Helper function that just fetches a f
     return coord;
 }
 
+// This function assigns the position to a drone. It is assumed that you are only inputting the part of the positions array that carries the coordinates
 void get_position(float position[2]) {
     position[0] = get_coordinate('X');
     position[1] = get_coordinate('Y');
 }
 
-// adds a drone the id value cannot
-int add_drone(unsigned int ids[], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+// This function adds a drone to the program by adding information to a series of arrays defined in the parameteers. It uses a fleet_size variable across these arrays to associate the 
+// information that belongs to each drone with a certain index. 
+int add_drone(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2]) {
     printf("Add a drone:\n"); // Feedback to the user is important!
 
     ids[fleet_size] = get_id(ids, true);
@@ -133,13 +139,14 @@ int add_drone(unsigned int ids[], int fleet_size, char models[MAX_FLEET_SIZE][MA
     return fleet_size + 1; // Increment fleet size by 1
 }
 
+// This function displays a table header for the table that is printed in the display_drone and display_drones function. 
 void display_table_header() {
     printf("%-4s | %-5s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
     printf("-------------------------------------------\n"); // Cosmetic
 }
 
-// Function that satisfies Variation 2B - Nearest Drone finder
-void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2], bool single) {
+// This function displays a part of the table for a single drone. Additionally, if the single variable is true, the table header is in display_table_header is als printed. 
+void display_drone(int index, int ids[MAX_FLEET_SIZE], char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2], bool single) {
     if (ids[index] != 0) {
         if (single) {
             display_table_header();
@@ -151,8 +158,8 @@ void display_drone(int index, unsigned int ids[], char models[][MAX_MODEL_NAME_L
     }
 }
 
-// Variation 2B - Nearest Drone finder
-void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+// This function creates a table that displayes all of the drones that are stored in the arrays. 
+void display_drones(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2]) {
     if (fleet_size > 0) {
         printf("Drones:\n");
         display_table_header();
@@ -165,9 +172,10 @@ void display_drones(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_
     }
 }
 
-bool search_drone_by_id(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+// The search_drone_by_id function searched for a drone in the ids array. After that, it 
+bool search_drone_by_id(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2]) {
     printf("Search for drone by id:\n");
-    unsigned int id = get_id(ids, false);
+    int id = get_id(ids, false);
 
     for (int index = 0; index < fleet_size; index++) {
         printf("%u\n", ids[index]);
@@ -184,7 +192,7 @@ bool search_drone_by_id(unsigned int ids[], int fleet_size, char models[][MAX_MO
 }
 
 // Function that satisfies Variation 1C - Continuous entry mode
-int add_fleet(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[][2]) {
+int add_fleet(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2]) {
     char choice;
     printf("Adding Fleet:\n");
     
@@ -210,7 +218,8 @@ double calculate_distance(float x0, float y0, float x1, float y1) {
     return distance;
 }
 
-void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MODEL_NAME_LENGTH], float batteries[], float positions[MAX_FLEET_SIZE][2]){
+// This is the funcition 2b that satifsies Variaton 2b-- Find nearest drone. 
+void find_nearest_drone(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2]){
     
     
     printf("Finding nearest drone: \n");
@@ -226,7 +235,7 @@ void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MO
 
 
     // this for loop iterates through the position array
-    for (int i = 1; i < MAX_FLEET_SIZE; i++){
+    for (int i = 1; i < fleet_size; i++){
         if (test_distance = calculate_distance(x, y, positions[i][0], positions[i][1]) < distance){
             index = i;
             distance = test_distance;
@@ -241,7 +250,7 @@ void find_nearest_drone(unsigned int ids[], int fleet_size, char models[][MAX_MO
 }
 
 int main(void) {
-    unsigned int ids[MAX_FLEET_SIZE];
+    int ids[MAX_FLEET_SIZE];
     int fleet_size = 0;
     char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH];
     float batteries[MAX_FLEET_SIZE];
@@ -256,6 +265,8 @@ int main(void) {
             printf("Invalid input. Please enter an integer between 1 and 7: ");
             clear_input();
         }
+
+        printf("\n");
 
         switch (choice) {
             case 1: {
@@ -291,6 +302,8 @@ int main(void) {
                 break;
             }
         }
+
+        printf("\n");
         
     } while (choice != 0);
     
