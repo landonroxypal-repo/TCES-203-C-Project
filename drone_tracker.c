@@ -40,7 +40,7 @@ int get_id(int ids[MAX_FLEET_SIZE], bool restrict_to_unique) {
 
     bool is_dupe = false;
     while (scanf("%u", &id) != 1 || id == 0 || restrict_to_unique && (is_dupe = is_id_dupe(id, ids))){ // ID checked to see if it's a duplicate here.
-        printf("Invalid input. %s", is_dupe ? "Entered id is a duplicate, please enter a different id: " : "Please enter a nonzero positive integer:");
+        printf("Invalid input. %s", is_dupe ? "Entered ID is a duplicate, please enter a different ID: " : "Please enter a nonzero positive integer:");
         clear_input(); // without this clear, an infnite loop is possible!
     }
 
@@ -48,7 +48,7 @@ int get_id(int ids[MAX_FLEET_SIZE], bool restrict_to_unique) {
     return id;
 }
 
-
+// THis function creates adds characters to a string array and then returns its size.
 int get_char_array(char string_array[]){
     int character; // needs to be an int so that EOF works properly
     int index = 0;
@@ -60,7 +60,6 @@ int get_char_array(char string_array[]){
 
     if (index == TEST_MODEL_NAME_SIZE) { // Uh oh! The user inputted extra characters, so we need to clear the input!
         clear_input();
-        printf("Characters cleared!\n");
     }
 
     return index;
@@ -75,7 +74,7 @@ void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
 
     // Asks for a name until it is short enough. 
     while ((name_size = get_char_array(test_array)) >= MAX_MODEL_NAME_LENGTH){
-        printf("Invalid name input. Model name must be no longer than %d characters long. Please try again: ", MAX_MODEL_NAME_LENGTH);
+        printf("Invalid name input. Model name must be no longer than %d characters long. Please try again: ", MAX_MODEL_NAME_LENGTH - 1);
     }
 
     for (int i = 0; i < name_size; i++){
@@ -158,7 +157,7 @@ int add_drone(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZ
 
 // This function displays a table header for the table that is printed in the display_drone and display_drones function. 
 void display_table_header() {
-    printf("%-4s | %-5s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
+    printf("%-6s | %-6s | %-4s | %-4s | %-4s |\n", "ID", "Model", "Battery", "X", "Y"); // Using %s because using manual spaces really sucks 
     printf("-------------------------------------------\n"); // Cosmetic
 }
 
@@ -169,7 +168,7 @@ void display_drone(int index, int ids[MAX_FLEET_SIZE], char models[MAX_FLEET_SIZ
             display_table_header();
         } 
 
-        printf("%-4u | %-5s | %-6.2f%% | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
+        printf("%-6u | %-6s | %-6.2f%% | %-4.2f | %-4.2f |\n", ids[index], models[index], batteries[index], positions[index][0], positions[index][1]);
     } else {
         printf("No drone to display at index %d!", index);
     }
@@ -191,7 +190,7 @@ void display_drones(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLE
 
 // The search_drone_by_id function searched for a drone in the ids array. After that, it 
 bool search_drone_by_id(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZE][MAX_MODEL_NAME_LENGTH], float batteries[MAX_FLEET_SIZE], float positions[MAX_FLEET_SIZE][2]) {
-    printf("Search for drone by id:\n");
+    printf("Search for drone by ID:\n");
     int id = get_id(ids, false);
 
     for (int index = 0; index < fleet_size; index++) {
@@ -275,7 +274,7 @@ int main(void) {
         printf("Options: \n\t[1] add a drone \n\t[2] display drones \n\t[3] ID search \n\t[4] average battery \n\t[5] add fleet \n\t[6] find nearest drone \n\t[0] exit\n\nEnter command: ");
 
         while (scanf("%d", &choice) != 1 && choice >= 0 && choice <= 7){
-            printf("Invalid input. Please enter an integer between 1 and 7: ");
+            printf("Invalid input. Please enter an integer between 0 and 6: ");
             clear_input();
         }
 
@@ -307,11 +306,11 @@ int main(void) {
                 break;
             }
             case 0: {
-                printf("goodbye!");
+                printf("Goodbye!\n");
                 break;
             }
             default: {
-                printf("invalid command");
+                printf("Invalid Command. Please try again.\n");
                 break;
             }
         }
