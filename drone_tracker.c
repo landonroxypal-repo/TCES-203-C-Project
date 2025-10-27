@@ -14,8 +14,6 @@
 
 #define MAX_FLEET_SIZE 100
 #define MAX_MODEL_NAME_LENGTH 7 // Note: due to the terminate character this value must be the name length you want + 1. (i.e if you want a six character name limit set this value to 7)
-#define TEST_MODEL_NAME_SIZE 10 // This size is used for data validation. since the maximum amount of characters is 6, 10 sould be overkill enough to see if the string is too large. 
-
 // This function clears the input stream so that scanf won't read input that is left during previous calls. 
 void clear_input() {
     int flushchar; 
@@ -49,16 +47,16 @@ int get_id(int ids[MAX_FLEET_SIZE], bool restrict_to_unique) {
 }
 
 
-int get_char_array(char string_array[]){
+int get_char_array(char char_array[]) {
     int character; // needs to be an int so that EOF works properly
     int index = 0;
     
-    while ((character = getchar()) != '\n' && character != EOF && index < TEST_MODEL_NAME_SIZE) { // While getchar is reading and the string is not longer than the test array size..
-        string_array[index] = (char) character; // We need to typecast the character variable (int to char) so that the compiler doesn't throw any errors
+    while ((character = getchar()) != '\n' && character != EOF && index < MAX_MODEL_NAME_LENGTH) { // While getchar is reading and the string is not longer than the test array size..
+        char_array[index] = (char) character; // We need to typecast the character variable (int to char) so that the compiler doesn't throw any errors
         index++;
     }
 
-    if (index == TEST_MODEL_NAME_SIZE) { // Uh oh! The user inputted extra characters, so we need to clear the input!
+    if (index >= MAX_MODEL_NAME_LENGTH) { // Uh oh! The user inputted extra characters, so we need to clear the input!
         clear_input();
         printf("Characters cleared!\n");
     }
@@ -69,19 +67,19 @@ int get_char_array(char string_array[]){
 // This function is used to create a model name for the drones. It is then returned in add_drone. 
 void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
     printf("Enter model name: ");
-    char test_array[TEST_MODEL_NAME_SIZE];
-    int name_size; // stores size and index that will have the next character inserted/
-    // REMBER FOR NOW: MAX_MODEL_NAME_LENGTH - 1
+    char test_array[MAX_MODEL_NAME_LENGTH];
+    int name_index; // stores size and index that will have the next character inserted/
+    // REMEMBER FOR NOW: MAX_MODEL_NAME_LENGTH - 1
 
     // Asks for a name until it is short enough. 
-    while ((name_size = get_char_array(test_array)) >= MAX_MODEL_NAME_LENGTH){
-        printf("Invalid name input. Model name must be no longer than %d characters long. Please try again: ", MAX_MODEL_NAME_LENGTH);
+    while ((name_index = get_char_array(test_array)) >= MAX_MODEL_NAME_LENGTH){
+        printf("Invalid name input. Model name must be no longer than %d characters long. Please try again: ", MAX_MODEL_NAME_LENGTH - 1);
     }
 
-    for (int i = 0; i < name_size; i++){
+    for (int i = 0; i < name_index; i++){
         name[i] = test_array[i];
     }
-    name[name_size + 1] = '\0'; // end of string
+    name[name_index] = '\0'; // end of string
 }
 
 // This function pulls the battery level inputted by the user.
