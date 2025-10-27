@@ -13,7 +13,8 @@
 #include <math.h>
 
 #define MAX_FLEET_SIZE 100
-#define MAX_MODEL_NAME_LENGTH 7 // Note: due to the terminate character this value must be the name length you want + 1. (i.e if you want a six character name limit set this value to 0)
+#define MAX_MODEL_NAME_LENGTH 7 // Note: due to the terminate character this value must be the name length you want + 1. (i.e if you want a six character name limit set this value to 7)
+#define TEST_MODEL_NAME_SIZE 10 // This size is used for data validation. since the maximum amount of characters is 6, 10 sould be overkill enough to see if the string is too large. 
 
 // This function clears the input stream so that scanf won't read input that is left during previous calls. 
 void clear_input() {
@@ -47,24 +48,40 @@ int get_id(int ids[MAX_FLEET_SIZE], bool restrict_to_unique) {
     return id;
 }
 
-// This function is used to create a model name for the drones. It is then returned in add_drone. 
-void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
-    printf("Enter model name: ");
 
+int get_char_array(char string_array[]){
     int character; // needs to be an int so that EOF works properly
-    int name_index = 0;
+    int index = 0;
     
-    while ((character = getchar()) != '\n' && character != EOF && name_index < MAX_MODEL_NAME_LENGTH - 1) { // While getchar is reading and the string is not longer than the name limit..
-        name[name_index] = (char) character; // We need to typecast the character variable (int to char) so that the compiler doesn't throw any errors
-        name_index++;
+    while ((character = getchar()) != '\n' && character != EOF && index < TEST_MODEL_NAME_SIZE) { // While getchar is reading and the string is not longer than the test array size..
+        string_array[index] = (char) character; // We need to typecast the character variable (int to char) so that the compiler doesn't throw any errors
+        index++;
     }
 
-    name[name_index + 1] = '\0'; // end of string
-
-    if (name_index == MAX_MODEL_NAME_LENGTH - 1) { // Uh oh! The user inputted extra characters, so we need to clear the input!
+    if (index == TEST_MODEL_NAME_SIZE) { // Uh oh! The user inputted extra characters, so we need to clear the input!
         clear_input();
         printf("Characters cleared!\n");
     }
+
+    return index;
+}
+
+// This function is used to create a model name for the drones. It is then returned in add_drone. 
+void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
+    printf("Enter model name: ");
+    char test_array[TEST_MODEL_NAME_SIZE];
+    int name_size; // stores size and index that will have the next character inserted/
+    // REMBER FOR NOW: MAX_MODEL_NAME_LENGTH - 1
+
+    // Asks for a name until it is short enough. 
+    while ((name_size = get_char_array(test_array)) >= MAX_MODEL_NAME_LENGTH){
+        printf("Invalid name input. Model name must be no longer than %d characters long. Please try again: ", MAX_MODEL_NAME_LENGTH);
+    }
+
+    for (int i = 0; i < name_size; i++){
+        name[i] = test_array[i];
+    }
+    name[name_size + 1] = '\0'; // end of string
 }
 
 // This function pulls the battery level inputted by the user.
@@ -214,7 +231,6 @@ int add_fleet(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX_FLEET_SIZ
 
 double calculate_distance(float x0, float y0, float x1, float y1) {
     double distance = sqrt((x1-x0) * (x1 - x0) + (y1 - y0) *(y1-y0));
-    printf("Distance: %f\n"); 
     return distance;
 }
 
@@ -232,15 +248,12 @@ void find_nearest_drone(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX
     int index;
     double test_distance;
 
-
-
     // this for loop iterates through the position array
     for (int i = 1; i < fleet_size; i++){
         if (test_distance = calculate_distance(x, y, positions[i][0], positions[i][1]) < distance){
             index = i;
             distance = test_distance;
         }
-        printf("%d \n\n", distance);
     }
 
     // prints resulting drone
