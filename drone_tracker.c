@@ -40,7 +40,7 @@ int get_id(int ids[MAX_FLEET_SIZE], bool restrict_to_unique) {
 
     bool is_dupe = false;
     while (scanf("%u", &id) != 1 || id == 0 || restrict_to_unique && (is_dupe = is_id_dupe(id, ids))){ // ID checked to see if it's a duplicate here.
-        printf("Invalid input. %s", is_dupe ? "Entered ID is a duplicate, please enter a different ID: " : "Please enter a nonzero positive integer:");
+        printf("Invalid input. %s", is_dupe ? "Entered ID is a duplicate, please enter a different ID: " : "Please enter a nonzero positive integer: ");
         clear_input(); // without this clear, an infnite loop is possible!
     }
 
