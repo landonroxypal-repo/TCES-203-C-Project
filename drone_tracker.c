@@ -75,10 +75,10 @@ void get_name(char name[MAX_MODEL_NAME_LENGTH]) {
         printf("Invalid name input. Model name must be no longer than %d characters long. Please try again: ", MAX_MODEL_NAME_LENGTH - 1);
     }
 
-    for (int i = 0; i < name_index; i++){
+    for (int i = 0; i < name_size; i++){
         name[i] = test_array[i];
     }
-    name[name_index] = '\0'; // end of string
+    name[name_size] = '\0'; // end of string
 }
 
 // This function pulls the battery level inputted by the user.
