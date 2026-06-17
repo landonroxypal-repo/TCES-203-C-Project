@@ -247,7 +247,7 @@ void find_nearest_drone(int ids[MAX_FLEET_SIZE], int fleet_size, char models[MAX
 
     // this for loop iterates through the position array
     for (int i = 1; i < fleet_size; i++){
-        if (test_distance = calculate_distance(x, y, positions[i][0], positions[i][1]) < distance){
+        if ((test_distance = calculate_distance(x, y, positions[i][0], positions[i][1])) < distance){
             index = i;
             distance = test_distance;
         }
