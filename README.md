@@ -52,7 +52,7 @@ without installing a compiler. Simply run the application from the project direc
 ```
 
 > [!NOTE]
-> If you would rather rebuild the executable yourself on Windows (for example, with MinGW):
+> If you would rather rebuild the executable yourself on Windows:
 > ```powershell
 > gcc -std=c11 drone_tracker.c -lm -o drone_tracker.exe
 > ```
